@@ -184,7 +184,7 @@ class MCTSAgent:
         self,
         num_rounds=2000,
         temperature=1.0,
-        time_limit=10.0,
+        time_limit=15.0,
         max_rollout_depth=28,
         exploration_constant=1.414,
     ):

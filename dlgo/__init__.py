@@ -12,7 +12,7 @@ __version__ = "0.1.0"
 
 from .gotypes import Player, Point
 from .goboard import Board, GameState, Move
-from .scoring import compute_game_result, GameResult
+from .scoring import compute_game_result, default_komi, GameResult
 
 __all__ = [
     "Player",
@@ -21,5 +21,6 @@ __all__ = [
     "GameState",
     "Move",
     "compute_game_result",
+    "default_komi",
     "GameResult",
 ]

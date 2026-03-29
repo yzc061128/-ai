@@ -4,7 +4,10 @@
 提供地盘计算、对局结果判定等功能。
 """
 
+from __future__ import annotations
+
 from collections import namedtuple
+from typing import Optional
 
 from .gotypes import Player, Point
 
@@ -141,19 +144,41 @@ def _collect_region(start_pos, board, visited=None):
     return all_points, all_borders
 
 
-def compute_game_result(game_state):
+# 19×19 共 361 个交点，中国规则数目下常用贴目约 7.5 目（面积子）
+_REF_INTERSECTIONS = 19 * 19
+_REF_KOMI = 7.5
+
+
+def default_komi(board) -> float:
+    """
+    贴目随棋盘规模缩放，避免在 5×5（仅 25 点）仍使用与 19×19 相同的绝对贴目 7.5。
+
+    按交点总数与 361 点成比例：5×5 → 约 0.5 目，19×19 → 7.5 目。
+    结果按 0.5 目取整，与常见半目贴目一致。
+
+    说明：小棋盘先手优势往往更明显，贴目比例与「是否平衡胜率」无必然关系；
+    若需单独调平衡，可改此函数或传入固定 komi（见 compute_game_result）。
+    """
+    n = board.num_rows * board.num_cols
+    raw = _REF_KOMI * n / _REF_INTERSECTIONS
+    return round(raw * 2.0) / 2.0
+
+
+def compute_game_result(game_state, komi: Optional[float] = None):
     """
     计算对局结果。
 
     Args:
         game_state: 游戏状态
+        komi: 白方贴目；默认 None 时使用 default_komi（随棋盘大小缩放）
 
     Returns:
         GameResult: 包含黑方分、白方分、贴目的结果对象
     """
     territory = evaluate_territory(game_state.board)
+    k = default_komi(game_state.board) if komi is None else float(komi)
     return GameResult(
         territory.num_black_territory + territory.num_black_stones,
         territory.num_white_territory + territory.num_white_stones,
-        komi=7.5,
+        komi=k,
     )
