@@ -39,7 +39,13 @@ def mcts_agent(game_state):
     """MCTS 智能体（占位，学生实现后替换）。"""
     try:
         from agents.mcts_agent import MCTSAgent
-        agent = MCTSAgent(num_rounds=50000, time_limit=10.0)
+        # 优化参数：增加时间、减少模拟次数、调整探索常数、增加模拟深度
+        agent = MCTSAgent(
+            num_rounds=20000,
+            time_limit=20.0,
+            exploration_constant=1.0,
+            max_rollout_depth=40
+        )
         return agent.select_move(game_state)
     except ImportError as e:
         print(f"[WARN] MCTSAgent 未实现或导入错误: {e}")

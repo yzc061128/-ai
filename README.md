@@ -1,7 +1,5 @@
 # 围棋 AI 大作业
 
-**源码仓库**：<https://github.com/yzc061128/-ai>
-
 > **作业说明文档**：[docs/homework.pdf](docs/homework.pdf)
 >
 > 本项目为题目一（围棋 AI）的实现框架。
