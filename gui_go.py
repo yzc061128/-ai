@@ -2,7 +2,7 @@
 围棋人机对弈图形界面（Tkinter）。
 
 运行：python gui_go.py
-      python gui_go.py --size 7 --agent minimax   # 可选初始 AI
+      python gui_go.py --size 7 --agent random    # 可选初始白方：mcts / minimax / random
 """
 
 from __future__ import annotations
@@ -15,6 +15,7 @@ from dlgo import GameState, Player, Point
 from dlgo.goboard import Move
 
 from agents.mcts_agent import MCTSAgent
+from agents.random_agent import RandomAgent
 
 
 def _load_minimax():
@@ -60,6 +61,13 @@ class GoGUI:
             value="minimax",
             command=self._on_agent_mode_change,
         ).pack(side=tk.LEFT, padx=(8, 0))
+        tk.Radiobutton(
+            ai_bar,
+            text="随机",
+            variable=self.agent_mode,
+            value="random",
+            command=self._on_agent_mode_change,
+        ).pack(side=tk.LEFT, padx=(8, 0))
 
         self.canvas = tk.Canvas(root, width=w, height=h, bg="#dcb35c", highlightthickness=0)
         self.canvas.pack(fill=tk.BOTH, expand=True)
@@ -84,11 +92,16 @@ class GoGUI:
 
     def _update_window_title(self):
         mode = self.agent_mode.get()
-        self.root.title(f"围棋 {self.board_size}x{self.board_size} — 白方 {mode.upper()}")
+        label = {"mcts": "MCTS", "minimax": "Minimax", "random": "随机 AI"}.get(
+            mode, mode.upper()
+        )
+        self.root.title(f"围棋 {self.board_size}x{self.board_size} — 白方 {label}")
 
     def _rebuild_ai(self):
         mode = self.agent_mode.get()
-        if mode == "minimax" and self._minimax_cls is not None:
+        if mode == "random":
+            self.ai = RandomAgent()
+        elif mode == "minimax" and self._minimax_cls is not None:
             self.ai = self._minimax_cls(max_depth=3)
         else:
             if mode == "minimax":
@@ -249,11 +262,13 @@ class GoGUI:
 
 
 def main():
-    parser = argparse.ArgumentParser(description="围棋人机对弈 (Tkinter)，界面内选择白方 MCTS / Minimax")
+    parser = argparse.ArgumentParser(
+        description="围棋人机对弈 (Tkinter)，界面内选择白方 MCTS / Minimax / 随机"
+    )
     parser.add_argument("--size", type=int, default=5, help="棋盘边长")
     parser.add_argument(
         "--agent",
-        choices=["mcts", "minimax"],
+        choices=["mcts", "minimax", "random"],
         default="mcts",
         help="启动时默认选中的白方 AI（可在窗口内随时切换）",
     )

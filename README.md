@@ -1,5 +1,7 @@
 # 围棋 AI 大作业
 
+**源码仓库**：<https://github.com/yzc061128/-ai>
+
 > **作业说明文档**：[docs/homework.pdf](docs/homework.pdf)
 >
 > 本项目为题目一（围棋 AI）的实现框架。
@@ -142,6 +144,8 @@ python play.py --agent1 minimax --agent2 mcts --size 5
 - 显示当前回合、提子数等信息
 - 支持新游戏、悔棋等功能
 
+**本实现**：`python play.py` 或 `python gui_go.py` 启动 Tkinter 界面；**白方**可在窗口内选择 **MCTS / Minimax / 随机 AI**（第一小问随机智能体也可在人机界面中使用）。
+
 ---
 
 ## 快速开始
@@ -234,6 +238,10 @@ print('MCTS 选择:', move)
 ---
 
 ## 常见问题
+
+**Q: `python play.py` 与作业里的测试命令有什么区别？**  
+A: **仅输入** `python play.py`（不带任何参数）时，默认启动**图形界面**人机对弈。  
+作业中的 `python play.py --agent1 random --agent2 random --size 5` 等命令**带有 `--agent1` / `--agent2` 等参数**，会走**命令行对弈**并打印棋盘，**无需再写 `--cli`**，与作业原文一致。
 
 **Q: MCTS 模拟要走多少步？**
 A: 标准做法是走至终局，但可以限制深度（如 20-30 步）来提升效率。

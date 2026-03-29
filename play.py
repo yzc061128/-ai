@@ -5,9 +5,10 @@
     python play.py
     python play.py --size 7
 
-命令行对弈（作业脚本 / 批量测试）：
+命令行对弈（只要带有 --agent1 / --agent2 / --games 等参数即走 CLI，与作业测试命令一致）：
+    python play.py --agent1 random --agent2 random --size 5
     python play.py --cli --agent1 mcts --agent2 random --size 5
-    python play.py --cli --agent1 minimax --agent2 mcts --size 5 --games 10
+    python play.py --agent1 minimax --agent2 mcts --size 5 --games 10
 """
 
 import argparse
@@ -171,12 +172,20 @@ def main():
 
     args = parser.parse_args()
 
-    use_cli = (
+    argv = sys.argv[1:]
+    # 无任何参数：仅「python play.py」→ 图形界面（人机对弈）
+    # 凡显式出现 --agent1 / --agent2 / --games 等，一律走命令行对弈，
+    # 以便作业命令「python play.py --agent1 random --agent2 random --size 5」
+    # 在双方均为 random 时仍能打印棋盘对局，而不会误开 GUI。
+    use_cli = bool(argv) and (
         args.cli
         or args.quiet
         or args.games != 1
         or args.agent1 != "random"
         or args.agent2 != "random"
+        or "--agent1" in argv
+        or "--agent2" in argv
+        or "--games" in argv
     )
     if not use_cli:
         gui = Path(__file__).resolve().parent / "gui_go.py"
